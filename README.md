@@ -1,2 +1,2 @@
 # emacs-stuff
-emacs-lisp files
+Just random emacs-lisp files
