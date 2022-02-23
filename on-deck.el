@@ -2,6 +2,10 @@
 ;; This is a simple utility for togglind buffers 'on/off-deck' and being able
 ;; to invoke 'on-deck-switch' and be prompted for the set of *on-deck* buffers.
 
+(defun on-deck-prompt-for-buffer (buffer-names)
+  (let ((candidates (exclude-current-buffer-name buffer-names)))
+    (if (= (length candidates) 1) candidates (completing-read "on deck: " candidates))))
+
 (define-minor-mode on-deck-mode
   "Puts buffers on or off deck"
   :keymap (let ((map (make-sparse-keymap)))
@@ -66,7 +70,8 @@
   (message on-deck-mode-line-status))
 
 (defun on-deck-switch (to-buffer)
-  (interactive (list (prompt-for-buffer (mapcar #'buffer-name (on-deck-clean-up)))))
+  (interactive (list (on-deck-prompt-for-buffer
+                      (mapcar #'buffer-name (on-deck-clean-up)))))
   (switch-to-buffer (if (listp to-buffer)
                         (car to-buffer)
                       to-buffer)))
