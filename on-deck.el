@@ -2,9 +2,15 @@
 ;; This is a simple utility for togglind buffers 'on/off-deck' and being able
 ;; to invoke 'on-deck-switch' and be prompted for the set of *on-deck* buffers.
 
+;(defun exclude-current-buffer-name (buffer-names)
+;  (cl-remove-if #'(lambda (f) (string= (buffer-name) f)) buffer-names))
+
 (defun on-deck-prompt-for-buffer (buffer-names)
-  (let ((candidates (exclude-current-buffer-name buffer-names)))
-    (if (= (length candidates) 1) candidates (completing-read "on deck: " candidates))))
+  (cl-flet ((exclude-current-buffer-name
+             (buffer-names)
+             (cl-remove-if #'(lambda (f) (string= (buffer-name) f)) buffer-names)))
+    (let ((candidates (exclude-current-buffer-name buffer-names)))
+      (if (= (length candidates) 1) candidates (completing-read "on deck: " candidates)))))
 
 (define-minor-mode on-deck-mode
   "Puts buffers on or off deck"
